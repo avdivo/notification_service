@@ -1,8 +1,9 @@
 from django.utils import timezone
 
 from celery import shared_task
-from notification_service.celery import app
+from mailing.services.domain.sending_to_external_api import sending_to_external_api
 from mailing.models import Message
+
 
 import time
 from datetime import timedelta, datetime
@@ -21,7 +22,7 @@ def send_message(self):
         if random.randint(0, 4) == 1:
             se = 'Сообщение не отправлено ' + str(message.id)
             raise Exception()
-        time.sleep(10)
+        sending_to_external_api(message.client.phone, message.sending.mess)
         print(se)
         message.status = True
         message.save()
