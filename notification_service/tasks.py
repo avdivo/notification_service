@@ -8,7 +8,7 @@ from mailing.models import Message
 import time
 from datetime import timedelta, datetime
 
-@shared_task(bind=True)
+@shared_task(bind=True, max_retries=None)
 def send_message(self):
     """ Задача Celery для отправки сообщения """
     message = Message.objects.get(id=self.request.id)
@@ -16,17 +16,14 @@ def send_message(self):
         # Время окончания рассылки, сообщения не отправляются
         return
 
-    import random
-    se = 'Сообщение на номер ' + message.client.phone + ': ' + message.sending.mess + ' ' + str(message.id)
     try:
-        if random.randint(0, 4) == 1:
-            se = 'Сообщение не отправлено ' + str(message.id)
+        if sending_to_external_api(message.client.phone, message.sending.mess):
+            message.status = True
+            message.save()
+            print('Сообщение на номер ' + message.client.phone + ': ' + message.sending.mess + ' ' + str(message.id))
+        else:
+            print('Сообщение не отправлено ' + str(message.id))
+            print('Повтор ' + str(message.id))
             raise Exception()
-        sending_to_external_api(message.client.phone, message.sending.mess)
-        print(se)
-        message.status = True
-        message.save()
     except Exception as e:
-        print(se)
-        print('Повтор ' + str(message.id))
-        self.retry(exc=e, countdown=0)
+        self.retry(exc=e, countdown=10)
