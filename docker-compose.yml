@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  ns:
+    env_file:
+      - .env
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    networks:
+      ns_net:
+#      nginx_net:
+    volumes:
+      - .:/code
+    restart: always
+    ports:
+      - 0.0.0.0:8001:8000
+
+  redis:
+    container_name: redis
+    image: redis
+    networks:
+      ns_net:
+    restart: always
+    ports:
+      - 6379:6379
+
+  celery:
+    build: .
+    command: celery -A notification_service worker -l info
+    env_file:
+      - .env
+    restart: always
+    networks:
+      ns_net:
+
+  postgres:
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    networks:
+      ns_net:
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=ns
+      - POSTGRES_PASSWORD=ns
+      - POSTGRES_DB=ns_db
+volumes:
+  postgres_data:
+
+networks:
+  ns_net:
+    name: ns_net
+#  nginx_net:
+#    name: nginx_net
+

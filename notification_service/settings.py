@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 import environ
 
 from pathlib import Path
@@ -26,14 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
-TOKEN_FOR_API = env('TOKEN_FOR_API')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+TOKEN_FOR_API = os.environ.get('TOKEN_FOR_API')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'avdivo.ru']
 
 # Application definition
 
@@ -83,13 +83,16 @@ WSGI_APPLICATION = 'notification_service.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
-
-
+print(DATABASES, '----------------------------------------')
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -132,10 +135,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery and Redis
-# try:
-#     REDIS_PATH = os.environ['REDIS_PATH']  # Путь к Redis
-# except:
-REDIS_PATH = '0.0.0.0'
+
+REDIS_PATH = os.environ.get('REDIS_PATH', '0.0.0.0')  # Путь к Redis
 
 REDIS_HOST = REDIS_PATH
 REDIS_PORT = '6379'

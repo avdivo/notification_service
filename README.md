@@ -33,9 +33,16 @@ Cервис управления рассылками API администрир
 Проблемы с внешним сервисом не влияют на стабильность работы сервиса рассылок.
 
 
-- Для установки скачать репозиторий через GIT:
+- Скачать репозиторий через GIT:
 
 git clone https://github.com/avdivo/notification_service
+
+- Для запуска проекта в контейнерах выполнить:
+
+docker-compose up -d --build
+
+
+- Для установки без докеризации:
 
 - Перейти в папку проекта:
 
@@ -53,15 +60,9 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
-- Скачать образ Redis:
+- Скачать и запустить Redis в контейнере:
 
-sudo docker pull redis
-
-- Запустить Redis в контейнее:
-
-sudo docker start redis
-
-sudo docker run --name redid redis
+docker-compose up -d redis
 
 - Запустить сервер:
 
