@@ -41,6 +41,17 @@ git clone https://github.com/avdivo/notification_service
 
 docker-compose up -d --build
 
+- Открыть браузер и перейти по адресу:
+
+http://127.0.0.1:8000/ns/api/
+
+- Статистика доступна по адресам:
+
+http://127.0.0.1:8000/ns/api/statistics/
+
+http://127.0.0.1:8000/ns/api/statistics/{id}
+
+
 
 - Для установки без докеризации (используется только Redis в контейнере):
 
