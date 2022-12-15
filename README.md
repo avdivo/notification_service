@@ -42,7 +42,7 @@ git clone https://github.com/avdivo/notification_service
 docker-compose up -d --build
 
 
-- Для установки без докеризации:
+- Для установки без докеризации (используется только Redis в контейнере):
 
 - Перейти в папку проекта:
 
