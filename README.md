@@ -41,6 +41,10 @@ git clone https://github.com/avdivo/notification_service
 
 docker-compose up -d --build
 
+- Подготовить базу данных:
+
+docker-compose exec ns python manage.py migrate
+
 - Открыть браузер и перейти по адресу:
 
 http://0.0.0.0:8001/ns/api/
