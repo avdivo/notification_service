@@ -77,6 +77,10 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 
+- Подготовить базу данных:
+
+python3 manage.py migrate
+
 - Скачать и запустить Redis в контейнере:
 
 docker-compose up -d redis
